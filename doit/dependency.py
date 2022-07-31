@@ -7,7 +7,6 @@ import inspect
 import json
 from collections import defaultdict
 import importlib
-from dbm import dumb
 import dbm
 
 # note: to check which DBM backend is being used:
@@ -234,12 +233,7 @@ class DbmDB(object):
     def remove_all(self):
         """remove saved dependencies from DB for all tasks"""
         self._db = {}
-        # dumb dbm always opens file in update mode
-        if isinstance(self._dbm, dumb._Database):  # pragma: no cover
-            self._dbm._index = {}
-            self._dbm.close()
-        # gdbm can not be running on 2 instances on same thread
-        # see https://bitbucket.org/schettino72/doit/issue/16/
+        self._dbm.close()
         del self._dbm
         self._dbm = self.module.open(self.name, 'n')
         self.dirty = set()

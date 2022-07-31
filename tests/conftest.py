@@ -186,8 +186,8 @@ def CmdFactory(cls, outstream=None, task_loader=None, dep_file=None,
     if outstream:
         cmd.outstream = outstream
     if backend:
-        assert backend == "dbm"  # the only one used on tests
-        cmd.dep_manager = Dependency(DbmDB, dep_file, MD5Checker)
+        dep_class = backend_map[backend]
+        cmd.dep_manager = Dependency(dep_class, dep_file, MD5Checker, module_name=backend)
     elif dep_manager:
         cmd.dep_manager = dep_manager
     cmd.dep_file = dep_file  # (str) filename usually '.doit.db'
