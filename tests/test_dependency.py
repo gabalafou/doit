@@ -94,6 +94,8 @@ class TestDependencyDb(object):
         d2.close()
 
     def test_corrupted_file(self, pdep_manager):
+        if pdep_manager.whichdb == 'sqlite3':
+            pytest.skip('close() does not release fp on windows')
         if pdep_manager.whichdb == 'dbm.ndbm':
             # TODO: ndbm raises no Exception, but it writes an error on STDERR.
             pytest.skip('dbm.ndbm does not raise Exception')
@@ -109,6 +111,8 @@ class TestDependencyDb(object):
                       pdep_manager.db_class, pdep_manager.name)
 
     def test_corrupted_file_unrecognized_excep(self, monkeypatch, pdep_manager):
+        if pdep_manager.whichdb == 'sqlite3':
+            pytest.skip('close() does not release fp on windows')
         if pdep_manager.whichdb == 'dbm.ndbm':
             # TODO: ndbm raises no Exception, but it writes an error on STDERR.
             pytest.skip('dbm.ndbm does not raise Exception')
