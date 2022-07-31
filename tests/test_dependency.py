@@ -59,9 +59,9 @@ def test_sqlite_import():
 # test parametrization, execute tests for all DB backends.
 # create a separate fixture to be used only by this module
 # because only here it is required to test with all backends
-@pytest.fixture(params=[JsonDB, DbmDB, SqliteDB])
+@pytest.fixture(params=['json', 'sqlite3', 'dbm.gnu', 'dbm.ndbm', 'dbm.dumb'])
 def pdep_manager(request, tmp_path_factory):
-    return dep_manager_fixture(request, request.param, tmp_path_factory)
+    return dep_manager_fixture(request, tmp_path_factory, request.param)
 
 
 
@@ -94,8 +94,9 @@ class TestDependencyDb(object):
         d2.close()
 
     def test_corrupted_file(self, pdep_manager):
-        if pdep_manager.whichdb is None:  # pragma: no cover
-            pytest.skip('dumbdbm too dumb to detect db corruption')
+        if pdep_manager.whichdb == 'dbm.ndbm':
+            # TODO: ndbm raises no Exception, but it writes an error on STDERR.
+            pytest.skip('dbm.ndbm does not raise Exception')
 
         # create some corrupted files
         for name_ext in pdep_manager.name_ext:
@@ -107,10 +108,9 @@ class TestDependencyDb(object):
                       pdep_manager.db_class, pdep_manager.name)
 
     def test_corrupted_file_unrecognized_excep(self, monkeypatch, pdep_manager):
-        if pdep_manager.db_class is not DbmDB:
-            pytest.skip('test doesnt apply to non DBM DB')
-        if pdep_manager.whichdb is None:  # pragma: no cover
-            pytest.skip('dumbdbm too dumb to detect db corruption')
+        if pdep_manager.whichdb == 'dbm.ndbm':
+            # TODO: ndbm raises no Exception, but it writes an error on STDERR.
+            pytest.skip('dbm.ndbm does not raise Exception')
 
         # create some corrupted files
         for name_ext in pdep_manager.name_ext:
