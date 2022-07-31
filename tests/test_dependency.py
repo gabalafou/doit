@@ -102,6 +102,7 @@ class TestDependencyDb(object):
         for name_ext in pdep_manager.name_ext:
             full_name = pdep_manager.name + name_ext
             fd = open(full_name, 'w')
+            fd.seek(0)
             fd.write("""{"x": y}""")
             fd.close()
         pytest.raises(DatabaseException, Dependency,
@@ -116,6 +117,7 @@ class TestDependencyDb(object):
         for name_ext in pdep_manager.name_ext:
             full_name = pdep_manager.name + name_ext
             fd = open(full_name, 'w')
+            fd.seek(0)
             fd.write("""{"x": y}""")
             fd.close()
         monkeypatch.setattr(DbmDB, 'DBM_CONTENT_ERROR_MSG', 'xxx')
