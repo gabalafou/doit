@@ -735,7 +735,6 @@ class UptodateCalculator(object):
 if __name__ == '__main__':
     # inspect available DBM modules and used extensions
     import tempfile
-    import dbm
     from pathlib import Path
     import os
 
